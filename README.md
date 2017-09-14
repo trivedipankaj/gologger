@@ -1,5 +1,5 @@
 # gologger
- An asynchronous kafka logger with channel-based ring buffer
+ An asynchronous kafka logger with channel-based ring buffer in golang
 
 ## Instructions
 
@@ -13,7 +13,7 @@ go get -u github.com/trivedipankaj/gologger
 ```
 import "github.com/trivedipankaj/gologger"
 
-var brokers   = []string{"172.16.12.146:9092", "172.16.12.147:9092", "172.16.12.148:9092"}
+var brokers   = []string{"172.16.5.10:9092", "172.16.5.11:9092", "172.16.5.12:9092"}
 var topic     = "example"
 var type      = "merchant"
 
@@ -27,4 +27,8 @@ log 	  := map[string]interface{}{
 logger.AsyncLog(type, log)
 
 ```
+* `brokers` - The Kafka broker list.
+* `topic` - The Kafka topic to publish to.
+* `type` - The type of the log stream.
+* `log` - The log data in map format.
 
