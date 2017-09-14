@@ -1,5 +1,6 @@
 # gologger
  An asynchronous kafka logger with channel-based ring buffer in golang
+ * uses https://github.com/Shopify/sarama for interacting with Kafka
 
 ## Instructions
 
