@@ -17,9 +17,9 @@ type Logger struct {
 	brokers []string
 }
 
-func NewLogger(topic string, brokers []string) *Logger {
+func NewLogger(topic string, brokers []string, bufferLength int) *Logger {
 	in := make(chan string)
-	out := make(chan string, 400)
+	out := make(chan string, bufferLength)
 	return &Logger{topic: topic,
 		brokers: brokers,
 		level:   INFO,
