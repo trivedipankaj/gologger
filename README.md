@@ -15,7 +15,7 @@ go get -u github.com/trivedipankaj/gologger
 import l "github.com/trivedipankaj/gologger"
 
 func main() {
-    var brokers = []string{"172.16.12.146:9092", "172.16.12.147:9092", "172.16.12.148:9092"}
+    var brokers = []string{"172.16.5.10:9092", "172.16.5.11:9092", "172.16.5.12:9092"}
     var topic = "example"
     var kind = "merchant"
     var bufferLength = 500
