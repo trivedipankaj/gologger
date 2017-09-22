@@ -3,17 +3,20 @@ package main
 import l "github.com/trivedipankaj/gologger"
 
 func main() {
-	var brokers = []string{"172.16.12.146:9092", "172.16.12.147:9092", "172.16.12.148:9092"}
-	var topic = "example"
+	var brokers = []string{"10.50.21.117:9094", "10.50.21.118:9094", "10.50.21.119:9094"}
+	var topic = "test"
 	var kind = "merchant"
 	var bufferLength = 500
 
 	logger := l.NewLogger(topic, brokers, bufferLength)
+	logger.InitLogger()
 	log := map[string]interface{}{
 		"mid":  129954,
 		"gw":   8,
 		"prob": 0.91,
 		"mean": 0.78,
 	}
-	logger.AsyncLog(kind, log)
+	for i := 0; i < 10; i++ {
+		logger.AsyncLog(kind, log)
+	}
 }
