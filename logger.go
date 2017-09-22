@@ -31,9 +31,13 @@ func (l *Logger) SetTopic(topic string) {
 }
 
 func (l *Logger) KafkaProducer() (sarama.AsyncProducer, error) {
+	//logger := log.New(os.Stdout, "logger: ", log.Lshortfile)
+	//sarama.Logger = logger
 	config := sarama.NewConfig()
 	config.Producer.RequiredAcks = sarama.WaitForLocal
 	config.Producer.Compression = sarama.CompressionNone
+	//config.Producer.Return.Successes = true
+	//config.Producer.Return.Errors = true
 	var err error
 	producer, err := sarama.NewAsyncProducer(l.brokers, config)
 	if err != nil {
@@ -42,6 +46,7 @@ func (l *Logger) KafkaProducer() (sarama.AsyncProducer, error) {
 	c := make(chan os.Signal, 1)
 	signal.Notify(c, os.Interrupt)
 	signal.Notify(c, os.Kill)
+
 	go func() {
 		<-c
 		if err := producer.Close(); err != nil {
@@ -50,11 +55,13 @@ func (l *Logger) KafkaProducer() (sarama.AsyncProducer, error) {
 		log.Println("Async Producer closed")
 		os.Exit(1)
 	}()
+
 	go func() {
 		for err := range producer.Errors() {
 			log.Println("Failed to write message to topic:", err)
 		}
 	}()
+
 	return producer, nil
 }
 

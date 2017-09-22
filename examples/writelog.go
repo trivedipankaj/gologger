@@ -1,6 +1,10 @@
 package main
 
-import l "github.com/trivedipankaj/gologger"
+import (
+	"sync"
+
+	l "github.com/trivedipankaj/gologger"
+)
 
 func main() {
 	var brokers = []string{"10.50.21.117:9094", "10.50.21.118:9094", "10.50.21.119:9094"}
@@ -19,4 +23,7 @@ func main() {
 	for i := 0; i < 10; i++ {
 		logger.AsyncLog(kind, log)
 	}
+	wg := new(sync.WaitGroup)
+	wg.Add(1)
+	wg.Wait()
 }
