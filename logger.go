@@ -1,6 +1,7 @@
 package logger
 
 import (
+	"encoding/json"
 	"log"
 	"os"
 	"os/signal"
@@ -13,6 +14,7 @@ import (
 type Logger struct {
 	rb      *Ring
 	topic   string
+	encoder string
 	level   int64
 	brokers []string
 }
@@ -23,6 +25,7 @@ func NewLogger(topic string, brokers []string, bufferLength int) *Logger {
 	return &Logger{topic: topic,
 		brokers: brokers,
 		level:   INFO,
+		encoder: "msgpack",
 		rb:      NewRing(in, out)}
 }
 
@@ -30,10 +33,18 @@ func (l *Logger) SetTopic(topic string) {
 	l.topic = topic
 }
 
+func (l *Logger) SetEncoder(encoder string) {
+	l.encoder = encoder
+}
+
 func (l *Logger) KafkaProducer() (sarama.AsyncProducer, error) {
+	//logger := log.New(os.Stdout, "logger: ", log.Lshortfile)
+	//sarama.Logger = logger
 	config := sarama.NewConfig()
 	config.Producer.RequiredAcks = sarama.WaitForLocal
 	config.Producer.Compression = sarama.CompressionNone
+	//config.Producer.Return.Successes = true
+	//config.Producer.Return.Errors = true
 	var err error
 	producer, err := sarama.NewAsyncProducer(l.brokers, config)
 	if err != nil {
@@ -42,6 +53,7 @@ func (l *Logger) KafkaProducer() (sarama.AsyncProducer, error) {
 	c := make(chan os.Signal, 1)
 	signal.Notify(c, os.Interrupt)
 	signal.Notify(c, os.Kill)
+
 	go func() {
 		<-c
 		if err := producer.Close(); err != nil {
@@ -50,11 +62,13 @@ func (l *Logger) KafkaProducer() (sarama.AsyncProducer, error) {
 		log.Println("Async Producer closed")
 		os.Exit(1)
 	}()
+
 	go func() {
 		for err := range producer.Errors() {
 			log.Println("Failed to write message to topic:", err)
 		}
 	}()
+
 	return producer, nil
 }
 
@@ -91,7 +105,7 @@ func (l *Logger) InitLogger() {
 
 func (l *Logger) AsyncLog(kind string, msg map[string]interface{}) (P *Logger) {
 
-	b, err := msgpack.Marshal(NewLog(kind, msg).SetLevel(l.level))
+	b, err := Encoded(l.encoder, NewLog(kind, msg).SetLevel(l.level))
 	if err != nil {
 		panic(err)
 	}
@@ -122,4 +136,21 @@ func (l *Logger) Error() *Logger {
 func (l *Logger) Fatal() *Logger {
 	l.level = FATAL
 	return l
+}
+
+func Encoded(encoder string, log *Log) ([]byte, error) {
+	var (
+		err error
+		b   []byte
+	)
+
+	switch encoder {
+	case "msgpack":
+		b, err = msgpack.Marshal(log)
+	case "json":
+		b, err = json.Marshal(log)
+	default:
+	}
+
+	return b, err
 }
