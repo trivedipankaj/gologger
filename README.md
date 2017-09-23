@@ -1,7 +1,8 @@
 # gologger
  An asynchronous kafka logger with channel-based ring buffer in golang
  * uses https://github.com/Shopify/sarama for interacting with Kafka
- * uses msgpack to encode logs to send it over kafka
+ * uses msgpack by default to encode logs to send it over kafka
+ * json encoder is available now
 ## Installation
 
 ```
@@ -21,6 +22,11 @@ func main() {
     var bufferLength = 500
 
     logger := l.NewLogger(topic, brokers, bufferLength)
+    logger.InitLogger()
+    
+    //encode message with JSON
+    logger.SetEncoder("json")
+
     log := map[string]interface{}{
         "mid":  129954,
         "gw":   8,
