@@ -42,3 +42,17 @@ func main() {
 * `bufferLength` - Buffer length of the ring.
 * `log` - The log data in map format.
 
+### Example
+
+```
+go run writelog.go 
+
+```
+and consumer messages by
+
+```
+go run consumer.go
+
+```
+
+
