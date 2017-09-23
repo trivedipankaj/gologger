@@ -37,6 +37,10 @@ func (l *Logger) SetEncoder(encoder string) {
 	l.encoder = encoder
 }
 
+func (l *Logger) SetCurrentLevel(level int64) {
+	currentLevel = level
+}
+
 func (l *Logger) KafkaProducer() (sarama.AsyncProducer, error) {
 	//logger := log.New(os.Stdout, "logger: ", log.Lshortfile)
 	//sarama.Logger = logger
@@ -104,12 +108,13 @@ func (l *Logger) InitLogger() {
 }
 
 func (l *Logger) AsyncLog(kind string, msg map[string]interface{}) (P *Logger) {
-
-	b, err := Encoded(l.encoder, NewLog(kind, msg).SetLevel(l.level))
-	if err != nil {
-		panic(err)
+	if currentLevel < l.level {
+		b, err := Encoded(l.encoder, NewLog(kind, msg).SetLevel(l.level))
+		if err != nil {
+			panic(err)
+		}
+		go l.rb.Produce(string(b))
 	}
-	go l.rb.Produce(string(b))
 	return
 }
 

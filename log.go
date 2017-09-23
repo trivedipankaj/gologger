@@ -17,6 +17,10 @@ const (
 	ALL
 )
 
+var (
+	currentLevel int64 = ALL
+)
+
 type Log struct {
 	UID       string
 	Type      string
