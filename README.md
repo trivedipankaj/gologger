@@ -55,4 +55,30 @@ go run consumer.go
 
 ```
 
+### Log Levels
+Setting the current log level for logger
+
+```
+logger.InitLogger()
+logger.SetCurrentLevel(2)
+
+logger.AsyncLog(kind,log).Info()
+logger.AsyncLog(kind,log).Warn()
+
+```
+All the available log levels are listed below
+
+```
+const (
+    OFF = iota
+    FATAL
+    ERROR
+    WARN
+    INFO
+    DEBUG
+    ALL
+)
+```
+
+
 
