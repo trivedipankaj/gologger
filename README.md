@@ -48,7 +48,7 @@ func main() {
 go run writelog.go 
 
 ```
-and consumer messages by
+and consume messages by
 
 ```
 go run consumer.go
