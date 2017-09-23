@@ -97,8 +97,6 @@ func parseLog(msg interface{}) Log {
 
 func main() {
 
-	// initialize with empty data or an actual slice of floats
-
 	brokers := []string{"10.50.21.117:9094", "10.50.21.118:9094", "10.50.21.119:9094"}
 	topic := "test"
 
