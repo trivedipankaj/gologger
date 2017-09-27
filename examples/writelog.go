@@ -7,8 +7,8 @@ import (
 )
 
 func main() {
-	var brokers = []string{"10.50.21.117:9094", "10.50.21.118:9094", "10.50.21.119:9094"}
-	var topic = "test"
+	var brokers = []string{"172.16.10.156:9094", "172.16.10.157:9094", "172.16.10.158:9094"}
+	var topic = "example1"
 	var kind = "merchant"
 	var bufferLength = 500
 
@@ -16,6 +16,7 @@ func main() {
 	logger.InitLogger()
 	// encoder can be "json" and "msgpack"
 	logger.SetEncoder("json")
+	logger.SetCurrentLevel(7)
 
 	log := map[string]interface{}{
 		"mid":  129954,
