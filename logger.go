@@ -108,7 +108,7 @@ func (l *Logger) InitLogger() {
 }
 
 func (l *Logger) AsyncLog(kind string, msg map[string]interface{}) (P *Logger) {
-	if currentLevel < l.level {
+	if currentLevel > l.level {
 		b, err := Encoded(l.encoder, NewLog(kind, msg).SetLevel(l.level))
 		if err != nil {
 			panic(err)
